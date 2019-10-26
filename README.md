@@ -6,3 +6,5 @@ Includes a proxy to get the current count from the main site
 - python
 - flask
 - requests, requests-html
+
+Optionally require HTTP auth by environment AUTH_USER and AUTH_PASS
