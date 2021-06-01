@@ -80,7 +80,7 @@
             return str.split(',').join('');
         }
 
-        function animateTreeTotal() {
+        function animateTreeTotal(fast) {
             $('.counter').each(function () {
                 var $this = $(this),
                     countTo = $this.attr('data-count');
@@ -93,7 +93,7 @@
                     countNum: countTo
                 },
                     {
-                        duration: 900,
+                        duration: fast ? 1000: 10000,
                         easing: 'linear',
                         step: function () {
                             $this.text(formatNumber(Math.floor(this.countNum)));
@@ -105,16 +105,18 @@
             });
         }
 
-        function updateTreeTotal() {
+        function updateTreeTotal(fast) {
             $.getJSON('/trees.json', function(response) {
                 $('#totalTrees').attr('data-count', response.count);
-                animateTreeTotal();
+                animateTreeTotal(fast);
             });
         }
 
         $(document).ready(function () {
-            updateTreeTotal();
-            window.setInterval(updateTreeTotal,10000);
+            updateTreeTotal(true);
+            window.setTimeout(function() {
+                window.setInterval(function() { updateTreeTotal(false); },10000);
+            }, 10000);
         });
     </script>
 
