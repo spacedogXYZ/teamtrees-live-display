@@ -1,14 +1,13 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, render_template
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 import os
 import requests
-from requests_html import HTMLSession
-
+from proxy import proxy
 
 app = Flask(__name__, static_url_path='/static')
+app.register_blueprint(proxy)
 auth = HTTPBasicAuth()
 
 AUTH_USER = os.environ.get('AUTH_USER')
@@ -21,18 +20,6 @@ def verify_password(username, password):
     else:
         return True
     return False
-
-def get_trees_count():
-    session = HTMLSession()
-    page = session.get("https://teamtrees.org/")
-    elem = page.html.find('#totalTrees', first=True)
-    count = elem.attrs['data-count']
-    return count
-
-@app.route('/trees.json', methods=['GET'])
-def trees_proxy():
-    return jsonify({'count': get_trees_count()})
-
 
 @app.route('/', methods=['GET'])
 @auth.login_required
